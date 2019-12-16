@@ -1,0 +1,27 @@
+spring:
+ thymeleaf:
+   mode: HTML
+ # 指定开发环境的配置
+ profiles:
+   active: dev
+ # 修改默认的上传文件的大小,默认是1MB大小的图片
+ servlet:
+  multipart:
+   max-file-size: 5MB
+   max-request-size: 5MB
+
+ # 指定.properties文件所在的路径 默认是message路径
+ messages:
+   basename: config/messages
+
+# 自定义的用户头像
+comment:
+  avatar: /images/fruit.jpg
+
+aliyun:
+  service:
+    accessKeyId: aaaa # 你自己的accessKeyId
+    accessKeySecret: aaaa # 你自己的AccessKeySecret
+    signName: 乐优商城 # 签名名称
+    verifyCodeTemplate: SMS_173347527 # 模板名称
+

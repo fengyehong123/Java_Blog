@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.94.247.72:3306/myblog?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: mysqlJMW
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+# 配置日志的级别
+logging:
+  level:
+    root: warn
+    com.blog: info
+  file: log/blog-pro.log
+server:
+  port: 8081

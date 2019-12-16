@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <!-- 移动端的预览设置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title th:replace="${title}">博客详情</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+    <!-- 引入中文排版的css -->
+    <link rel="stylesheet" href="../static/css/typo.css" th:href="@{/css/typo.css}">
+    <!-- 引入动画显示的css -->
+    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{/css/animate.css}">
+    <!-- 引入代码高亮显示的插件 -->
+    <link rel="stylesheet" href="../static/lib/prism/prism.css" th:href="@{/lib/prism/prism.css}">
+    <!-- 生成文章目录的css -->
+    <link rel="stylesheet" href="../static/lib/tocbot/tocbot.css" th:href="@{/lib/tocbot/tocbot.css}">
+    <link rel="stylesheet" href="../static/css/zzsc.css"  type="text/css" th:href="@{/css/zzsc.css}" />
+    <link rel="stylesheet" href="../static/lib/layui/css/layui.css"  media="all" th:href="@{/lib/layui/css/layui.css}">
+    <!--<link rel="stylesheet" href="../static/lib/bootstrap/css/bootstrap.min.css" th:href="@{/lib/bootstrap/css/bootstrap.min.css}">-->
+    <!--<link rel="stylesheet" href="../static/css/login.css" th:href="@{/css/login.css}" />-->
+</head>
+<body>
+<!-- 导航 -->
+<!-- segment: 表示是一个片段
+     inverted: 表示反转,原先是白色,反转成黑色
+     attached: 依附,让片段没有圆角,紧贴浏览器
+     m-padded-tb-mini: 自定义css样式,让样式缩小
+     m-shadow-small: 自定义的样式,给导航添加小阴影
+
+-->
+<nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+    <div class="ui container">
+        <!-- 导航组件 stackable: 为了响应手机的移动端,含义为可以堆叠 -->
+        <div class="ui inverted secondary stackable menu">
+            <!-- 放置网站的logo
+                teal: 颜色
+                item: 代表是 menu里面的每一个条目
+            -->
+            <h2 class="ui teal header item">Blog</h2>
+            <!-- 给首页添加图标  结尾处要添加上icon才可以添加上样式-->
+            <a href="#" th:href="@{/}" class="m-item item m-mobile-hide" th:classappend="${n==1}?'active'"><i class="home icon"></i>首页</a>
+            <a href="#" th:href="@{/types/-1}" class="m-item item m-mobile-hide" th:classappend="${n==2}?'active'"><i class="idea icon"></i>分类</a>
+            <a href="#" th:href="@{/tags/-1}" class="m-item item m-mobile-hide" th:classappend="${n==3}?'active'"><i class="tags icon"></i>标签</a>
+            <a href="#" th:href="@{/archives}" class="m-item item m-mobile-hide" th:classappend="${n==4}?'active'"><i class="clone icon"></i>归档</a>
+            <a href="#" th:href="@{/}" class="m-item item m-mobile-hide" th:classappend="${n==5}?'active'"><i class="desktop icon"></i>精华网站</a>
+            <a href="#" th:href="@{/}" class="m-item item m-mobile-hide" th:classappend="${n==6}?'active'"><i class=" arrow alternate circle down icon"></i>推荐资源</a>
+            <a href="#" th:href="@{/about}" class="m-item item m-mobile-hide" th:classappend="${n==7}?'active'"><i class="info icon"></i>关于我</a>
+            <!-- 搜索文本框
+                 文本框向右放置
+            -->
+            <div class="right m-item item m-mobile-hide">
+                <!-- ui框架提供的数据框组件
+                     icon 给搜索框加上图标
+                -->
+                <!-- <div class="ui icon input"> -->
+                <form name="search" th:action="@{/search}" method="post" target="_blank">
+                    <div class="ui icon inverted transparent input">
+                        <!--因为是input输入域,获取前端返回值的时候,要使用value去接收,如果是div标签的话,可以使用 th:text 去接收-->
+                        <input type="text" name="query" placeholder="Search..." th:value="${query}">
+                        <!-- link样式会让鼠标有手的形状 -->
+                        <!--onclick="document.forms['search'].submit()" : i 标签提交form表单的方式-->
+                        <i onclick="document.forms['search'].submit()" class="search link icon"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 按钮的颜色是黑色
+         m-mobile-show: 在宽屏幕的时候,按钮隐藏
+    -->
+    <a href="#" id="btn" class="ui black icon button m-right-top m-mobile-show">
+        <!-- 添加手机端响应的图标 -->
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+
+<!--底部-->
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive">
+    <!--容器-->
+    <div class="ui center aligned container">
+        <!-- 列布局分格 -->
+        <!-- grid 会将整个宽度分为16份
+             divided 是用线来分割划分的区域
+             inverted 为了让线能更加容易显示出来
+        -->
+        <div class="ui inverted divided stackable grid">
+            <!-- 分成三列,wide:填满 -->
+            <!-- 一共分成16份 -->
+            <div class="three wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <!-- 设置图片为圆角的方式 rounded image -->
+                        <img src="../static/images/wechat.jpg" th:src="@{/images/wechat.jpg}" class="ui rounded image" alt="" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="three wide column">
+                <!-- 标题 -->
+                <h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+
+                <div id="newblog-container">
+                    <!-- 添加竖着的列表 -->
+                    <div class="ui inverted link list" th:fragment="newBlogList">
+                        <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank" class="item" th:each="blog : ${newblogs}" th:text="${blog.title}">最新博客</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="three wide column">
+                <!-- 标题 -->
+                <h4 class="ui inverted header m-text-thin m-text-spaced">联系我</h4>
+                <!-- 添加竖着的列表 -->
+                <div class="ui inverted link list">
+                    <div class="item" th:text="#{index.email}">1355930128@qq.com</div>
+                </div>
+            </div>
+            <div class="seven wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced">博客介绍</h4>
+                <p class="m-text-thin m-text-spaced m-opacity-mini">这是一个练手的博客,菜鸟的我正在自己从0搭建一个网站,期间肯定会有很多困难,但我一定要克服</p>
+            </div>
+        </div>
+        <!-- 添加底部的分隔线 -->
+        <div class="ui inverted section divider"></div>
+        <!-- 分隔线下面的介绍 -->
+        <p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright@2019-9120 Designed by kameii</p>
+    </div>
+</footer>
+
+<!--js-->
+<th:block th:fragment="script">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <!-- 引入代码高亮的js -->
+    <script src="../static/lib/prism/prism.js" th:src="@{/lib/prism/prism.js}"></script>
+    <!-- 引入生成文章目录的js -->
+    <script src="../static/lib/tocbot/tocbot.min.js" th:src="@{/lib/tocbot/tocbot.min.js}"></script>
+    <!-- 引入生成二维码的js -->
+    <script src="../static/lib/qrcode/qrcode.js" th:src="@{/lib/qrcode/qrcode.js}"></script>
+    <!-- 引入平滑滚动的js -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+    <!-- 引入滑动侦测的js -->
+    <script src="../static/lib/waypoints/jquery.waypoints.js" th:src="@{/lib/waypoints/jquery.waypoints.js}"></script>
+    <script src="../static/js/zzsc.js" th:src="@{/js/zzsc.js}"></script>
+    <script src="../static/lib/layui/layui.all.js" charset="utf-8" th:src="@{/lib/layui/layui.all.js}"></script>
+    <script>
+        $('#newblog-container').load(/*[[@{/footer/newblog}]]*/"/footer/newblog");
+    </script>
+</th:block>
+</body>
+</html>

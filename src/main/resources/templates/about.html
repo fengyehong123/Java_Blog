@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!-- 移动端的预览设置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/me.css">
+    <title>关于我</title>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav th:replace="_fragments :: menu(7)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+        <div class="ui container">
+             <!-- 导航组件 stackable: 为了响应手机的移动端,含义为可以堆叠 -->
+            <div class="ui inverted secondary stackable menu">
+                <!-- 放置网站的logo
+                    teal: 颜色
+                    item: 代表是 menu里面的每一个条目
+                -->
+                <h2 class="ui teal header item">Blog</h2>
+                <!-- 给首页添加图标  结尾处要添加上icon才可以添加上样式-->
+                <a href="#" class="m-item item m-mobile-hide"><i class="home icon"></i>首页</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="tags icon"></i>标签</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="clone icon"></i>归档</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="desktop icon"></i>精华网站</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class=" arrow alternate circle down icon"></i>推荐资源</a>
+                <a href="#" class="active m-item item m-mobile-hide"><i class="info icon"></i>关于我</a>
+                <!-- 搜索文本框
+                     文本框向右放置
+                -->
+                <div class="right m-item item m-mobile-hide">
+                    <!-- ui框架提供的数据框组件
+                         icon 给搜索框加上图标
+                    -->
+                    <!-- <div class="ui icon input"> -->
+                    <div class="ui icon inverted transparent input">
+                            
+                        <input type="text" placeholder="Search...">
+                        <!-- link样式会让鼠标有手的形状 -->
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 按钮的颜色是黑色
+             m-mobile-show: 在宽屏幕的时候,按钮隐藏
+        -->
+        <a href="#" id="btn" class="ui black icon button m-right-top m-mobile-show">
+            <!-- 添加手机端响应的图标 -->
+            <i class="sidebar icon"></i>
+        </a>
+    </nav>
+
+    <!--中间内容-->
+    <div class="m-container m-padded-tb-big">
+        <div class="ui container">
+            <!-- 进行布局,添加移动端堆叠自动适应的效果 -->
+            <div class="ui stackable grid">
+                <!-- 左边11份 -->
+                <div class="eleven wide column">
+                    <div class="ui segment">
+                        <img src="../static/images/me.jpg" th:src="@{/images/me.jpg}" alt="" class="ui rounded image">
+                    </div>
+                </div>
+                <!-- 右边5份 -->
+                <div class="five wide column">
+                    <div class="ui top attached segment">
+                        <div class="ui header">关于我</div>
+                    </div>
+                    <div class="ui attached segment">
+                        <p class="m-text">贾铭威,一个菜鸟转行入门的初级程序员.大学本科是日语,毕业之后转行学习编程,一开始在传智播客学习了Python,目前在自学Java</p>
+                        <p class="m-text">日语能力:N1,日常交流没问题,动漫生肉基本能听懂.目前正在背诵英语单词</p>
+                    </div>
+                    <div class="ui attached segment">
+                        <!-- 个人兴趣爱好的标签 -->
+                        <div class="ui orange basic left pointing label">动漫</div>
+                        <div class="ui orange basic left pointing label">漫画</div>
+                        <div class="ui orange basic left pointing label">爬山</div>
+                        <div class="ui orange basic left pointing label">资源控</div>
+                    </div>
+                    <div class="ui attached segment">
+                        <div class="ui teal basic right pointing label m-margin-tb-tiny">日语</div>
+                        <div class="ui teal basic right pointing label m-margin-tb-tiny">Python</div>
+                        <div class="ui teal basic right pointing label m-margin-tb-tiny">Java</div>
+                        <div class="ui teal basic right pointing label m-margin-tb-tiny">MYSQL</div>
+                        <div class="ui teal basic right pointing label m-margin-tb-tiny">JS</div>
+                    </div>
+                    <!-- 最底部的 -->
+                    <div class="ui bottom attached segment">
+                        <a href="#" class="ui circular icon button"><i class="github icon"></i></a>
+                        <div id="wechat" class="ui circular icon button"><i class="weixin icon"></i></div>
+                        <div class="ui qq circular icon button" data-content="1355930128" data-position="bottom center"><i class="qq icon"></i></div>
+                    </div>
+
+                    <!-- 微信的图片,在点击触发之前,图片是隐藏的 -->
+                    <div id="wechatImg" class="ui flowing popup transition hidden">
+                        <img src="../static/images/wechat.jpg" th:src="@{/images/wechat.jpg}" alt="" class="ui rounded image" style="width: 120px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部内容 -->
+    <footer th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+        <!-- 整个容器
+             center aligned 容器内的字居中
+        -->
+        <div class="ui center aligned container">
+            <!-- 列布局分格 -->
+            <!-- grid 会将整个宽度分为16份
+                 divided 是用线来分割划分的区域
+                 inverted 为了让线能更加容易显示出来
+            -->
+            <div class="ui inverted divided stackable grid">
+                <!-- 分成三列,wide:填满 -->
+                <!-- 一共分成16份 -->
+                <div class="three wide column">
+                    <div class="ui inverted link list">
+                        <div class="item">
+                            <!-- 设置图片为圆角的方式 rounded image -->
+                            <img src="../static/images/wechat.jpg" class="ui rounded image" alt="" style="width: 110px">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="three wide column">
+                    <!-- 标题 -->
+                    <h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+                    <!-- 添加竖着的列表 -->
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">用户故事1</a>
+                        <a href="#" class="item">用户故事2</a>
+                        <a href="#" class="item">用户故事3</a>
+                    </div>
+                </div>
+                <div class="three wide column">
+                     <!-- 标题 -->
+                     <h4 class="ui inverted header m-text-thin m-text-spaced">联系我</h4>
+                     <!-- 添加竖着的列表 -->
+                     <div class="ui inverted link list">
+                         <div class="item">1355930128@qq.com</div>
+                         <a href="#" class="item">QQ:1355930128</a>
+                         <a href="#" class="item">用户故事3</a>
+                     </div>
+                </div>
+                <div class="seven wide column">
+                    <h4 class="ui inverted header m-text-thin m-text-spaced">博客介绍</h4>
+                    <p class="m-text-thin m-text-spaced m-opacity-mini">这是一个练手的博客,菜鸟的我正在自己从0搭建一个网站,期间肯定会有很多困难,但我一定要克服</p>
+                </div>
+            </div>
+            <!-- 添加底部的分隔线 -->
+            <div class="ui inverted section divider"></div>
+            <!-- 分隔线下面的介绍 -->
+            <p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright@2019-9120 Designed by kameii</p>
+        </div>
+    </footer>
+
+</body>
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<!--/*/</th:block>/*/-->
+<script>
+    $('#btn').click(function(){
+        // 点击按钮,如果有这个样式就去除,没有这个样式就添加
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    // 点击按钮出现联系方式的js
+    $('.qq').popup();
+    $('#wechat').popup({
+        // 定位的区域
+        popup: $('#wechatImg'),
+        // 触发的实践,默认是鼠标移动就触发,我们设置为点击才触发
+        on: 'hover',
+        // 图片出现的位置
+        position: 'bottom center'
+    })
+</script>
+</html>

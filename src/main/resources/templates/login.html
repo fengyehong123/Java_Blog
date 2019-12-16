@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../static/lib/bootstrap/css/bootstrap.min.css" th:href="@{/lib/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../static/css/login.css" th:href="@{/css/login.css}"/>
+    <link href="http://cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<style>
+    span{
+        color: #FF0000;
+        font-size:12px
+    }
+</style>
+<body>
+
+    <!-- 中间内容 -->
+    <div class="m-padded-tb-big">
+        <div class="ui container">
+            <!--注册登录-->
+            <div id='_start'>
+                <br />
+                <!--登录框-->
+                <div id="login_container">
+                    <div id="lab1">
+                        <span id="lab_login">用户登录</span>
+                        <span id="lab_toRegist">
+                            &emsp;还没有账号&nbsp;
+                            <span id='toRegist' style="color: #EB9316;cursor: pointer;">立即注册</span>
+                        </span>
+                    </div>
+                    <div style="width:330px;">
+                        <span id="lab_type1">手机号/账号登陆</span>
+                    </div>
+                    <div id="form_container1">
+                        <br />
+                        <input type="text" id="login_number" class="form-control" placeholder="手机号/用户名" />
+                        <input type="password" id="login_password" class="form-control" placeholder="密码" />
+                        <input type="button" value="登录" id="login_btn" class="btn btn-success" />
+                        <span id="rememberOrfindPwd">
+                            <span>
+                                <input id="remember" type="checkbox" style="margin-bottom: -1.5px;"/>
+                            </span>
+                        <span style="color:#000000">
+                                记住密码&emsp;&emsp;&emsp;&emsp;
+                            </span>
+                        <span style="color:#000000">
+                                忘记密码
+                            </span>
+                        </span>
+                    </div>
+
+                    <div style="display:block;width:330px;height：40px;">
+                        <span id="lab_type2">使用第三方直接登陆</span>
+                    </div>
+                    <div style="width:330px;height:100px;border-bottom: 1px solid #FFFFFF;">
+                        <br />
+                        <button id="login_QQ" type="button" class="btn btn-info">
+                            <img src="../static/images/qq32.png" th:src="@{/images/qq32.png}" style="width:20px;margin-top:-4px;" />&emsp;QQ登录
+                        </button>
+                        <button id="login_WB" type="button" class="btn btn-danger">
+                            <img src="../static/images/sina32.png" th:src="@{/images/sina32.png}" style="width:20px;margin-top:-4px;" />&emsp;微博登录
+                        </button>
+                    </div>
+                </div>
+                <!-- 会员注册 -->
+                <div id='regist_container' style="display: none;">
+                    <div id="lab1">
+                        <span id="lab_login">用户注册</span>
+                        <span id="lab_toLogin">
+                            &emsp;已有账号&nbsp;
+                            <span id='toLogin' style="color: #EB9316;cursor: pointer;">立即登录</span>
+                        </span>
+                    </div>
+                    <form id="form_container2" style="padding-top: 25px;">
+                        <div class="field">
+                            <input type="text" class="form-control" name="username" placeholder="用户名" id="regist_account"/>
+                        </div>
+                        <div class="field">
+                            <input type="password" class="form-control" name="password" placeholder="密码" id="regist_password1"/>
+                        </div>
+                        <div class="field">
+                            <input type="text" class="form-control" placeholder="手机号" name="mobileNum" id="regist_phone"/>
+                        </div>
+                        <div class="field">
+                            <input type="text" class="form-control" placeholder="验证码" id="regist_vcode" />
+                        </div>
+                        <input id="getVCode" type="button" class="btn btn-success" value="点击发送验证码" onclick="sendCode(this)"/>
+                    </form>
+                    <input type="button" value="注册" class="btn btn-success" id="regist_btn" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="../static/js/jquery3.2.1.min.js"></script>
+<script src="../static/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="http://cdn.staticfile.org/semantic-ui/2.2.7/semantic.min.js"></script>
+<!--/*/</th:block>/*/-->
+
+<script>
+    // 进入界面后加载登录框
+    $(document).ready(function () {
+        $("#regist_container").hide();
+        $("#_close").show();
+        $("#_start").animate({
+            left: '350px',
+            height: '520px',
+            width: '400px'
+        }, 500, function() {
+            $("#login_container").show(500);
+            $("#_close").animate({
+                height: '40px',
+                width: '40px'
+            }, 500);
+        });
+    });
+
+    //打开会员注册
+    $("#Regist_start_").click(function() {
+        $("#login_container").hide();
+        $("#_close").show();
+        $("#_start").animate({
+            left: '350px',
+            height: '520px',
+            width: '400px'
+        }, 500, function() {
+            $("#regist_container").show(500);
+            $("#_close").animate({
+                height: '40px',
+                width: '40px'
+            }, 500);
+        });
+    });
+
+    //去 注册
+    $("#toRegist").click(function(){
+        $("#login_container").hide(500);
+        $("#regist_container").show(500);
+    });
+    //去 登录
+    $("#toLogin").click(function(){
+        $("#regist_container").hide(500);
+        $("#login_container").show(500);
+    });
+
+
+    var clock = '';
+    var nums = 30;
+    var btn;
+    // 发送验证码
+    function sendCode(thisBtn) {
+        btn = thisBtn;
+        btn.disabled = true; //将按钮置为不可点击
+
+        // 发送ajax请求
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8080/sendCode',
+            data: {
+                mobileNum: $('#regist_phone').val()
+            },
+            dataType: 'json'
+        }).done(function(result) {
+            alert(result);
+        });
+
+
+        btn.value = '重新获取（'+nums+'）';
+        clock = setInterval(doLoop, 1000); //一秒执行一次
+    }
+
+    // 验证码定时器
+    function doLoop() {
+        nums--;
+        if (nums > 0) {
+            btn.value = '重新获取（'+nums+'）';
+        } else {
+            clearInterval(clock); //清除js定时器
+            btn.disabled = false;
+            btn.value = '点击发送验证码';
+            nums = 10; //重置时间
+        }
+    }
+
+    // 第三方登录
+    $(document).ready(function(){
+        $("#login_QQ").click(function(){
+            alert("功能正在开发中！");
+        });
+        $("#login_WB").click(function(){
+            alert("功能正在开发中！");
+        });
+    });
+
+    $(document).ready(function() {
+        // [*] 自定义校验函数，返回 false 校验不通过
+        $.fn.form.settings.rules.passwordStrong = function(value) {
+            return value.length > 5;
+        };
+
+        // [*] 使用 AJAX 去服务器上验证数据，返回 false 校验不通过
+        $.fn.form.settings.rules.uniqueUsername = function(username) {
+            var valid;
+            $.ajax({
+                url: 'http://localhost:8080/checkName',
+                data: {username: username},
+                type: 'GET',
+                async: false, // 同步 AJAX 请求
+                dataType:    'json',
+                contentType: 'application/json;charset=utf-8'
+            }).done(function(result) {
+                    valid = result
+                });
+
+            return valid;
+        };
+        // 校验手机号是否存在
+        $.fn.form.settings.rules.uniqueMobile = function(mobile) {
+            var valid;
+            $.ajax({
+                url: 'http://localhost:8080/checkMobile',
+                data: {mobile: mobile},
+                type: 'GET',
+                async: false, // 同步 AJAX 请求
+                dataType:    'json',
+                contentType: 'application/json;charset=utf-8'
+            }).done(function(result) {
+                valid = result
+            });
+
+            return valid;
+        };
+
+
+        $('#form_container2').form({
+            on: 'blur',    // 当失去焦点时就进行验证
+            inline : true, // 在 input 下面显示错误提示，而不是显示在 .ui.error.message
+            fields: {
+                username: {
+                    identifier: 'username',  // [*] input 的 name
+                    rules: [{
+                        type:   'empty',     // [*] 校验规则或函数
+                        prompt: '名字不能为空' // [*] 错误提示
+                    },{
+                        type:   'uniqueUsername', // [*] 上面自定义的 AJAX 校验函数
+                        prompt: '名字已经存在'
+                    }]
+                },
+                password: {
+                    identifier: 'password',
+                    rules: [{
+                        type:    'empty',
+                        prompt: '密码不能为空'
+                    },{
+                        type:   'passwordStrong',
+                        prompt: '密码强度太弱'
+                    }]
+                },
+                mobileNum: {
+                    identifier: 'mobileNum',
+                    rules: [{
+                        type:    'empty',
+                        prompt: '手机号不能为空'
+                    },{
+                        type:   'regExp',
+                        value:  /^1[3456789]\d{9}$/,
+                        prompt: '输入正确的手机号格式'
+                    },{
+                        type:   'uniqueMobile',
+                        prompt: '手机号已经存在'
+                    }]
+                }
+            },
+            onSuccess: function(event, fields) {
+                // [*] 表单验证通过后调用 onSuccess 函数
+                // fields 中保存了所有的表单数据，例如 {name: "Alice", color: "rgb(255, 255, 255)"}
+                event.preventDefault(); // [*] 如果需要使用 Ajax 提交时，防止表单自动提交
+                console.log(fields);
+            }
+        });
+    });
+
+</script>
+
+</html>

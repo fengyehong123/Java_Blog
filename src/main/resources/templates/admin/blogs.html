@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!-- 移动端的预览设置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <title>博客管理</title>
+</head>
+<body>
+
+    <nav th:replace="admin/_fragments :: menu(1)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+        <div class="ui container">
+             <!-- 导航组件 stackable: 为了响应手机的移动端,含义为可以堆叠 -->
+            <div class="ui inverted secondary stackable menu">
+                <!-- 放置网站的logo
+                    teal: 颜色
+                    item: 代表是 menu里面的每一个条目
+                -->
+                <h2 class="ui teal header item">后台管理</h2>
+                <!-- 给首页添加图标  结尾处要添加上icon才可以添加上样式-->
+                <a href="#" class="active m-item item m-mobile-hide"><i class="home icon"></i>博客</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="tags icon"></i>标签</a>
+                <!-- 管理员头像区域 -->
+                <div class="right m-item m-mobile-hide menu">
+                    <!-- 下拉菜单 -->
+                    <div class="ui dropdown item">
+                        <div class="text">
+                            <img class="ui avatar image" src="https://picsum.photos/100/100?image=1003">
+                            贾铭威
+                        </div>
+                        <!-- 下拉图标 -->
+                        <i class="dropdown icon"></i>
+                        <!-- 下拉菜单 -->
+                        <div class="menu">
+                            <a href="#" class="item">修改密码</a>
+                            <a href="#" class="item">注销</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 按钮的颜色是黑色
+             m-mobile-show: 在宽屏幕的时候,按钮隐藏
+        -->
+        <a href="#" id="btn" class="ui black icon button m-right-top m-mobile-show">
+            <!-- 添加手机端响应的图标 -->
+            <i class="sidebar icon"></i>
+        </a>
+    </nav>
+
+    <!-- 二级导航 -->
+    <div class="ui attached pointing menu">
+        <div class="ui container">
+            <div class="right menu">
+                <a href="#" th:href="@{/admin/blogs/input}" class="item">发布</a>
+                <a href="#" th:href="@{/admin/blogs}" class="ui active teal item">列表</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 中间内容 -->
+    <div class="m-container-small m-padded-tb-big">
+        <div class="ui container">
+            <!-- 查询表单 -->
+            <div class="ui secondary segment form">
+                <!--定义一个隐含域,用来传递翻页的传递的条件
+                    把分页的条件放在name中,通过post的方式进行提交
+                -->
+                <input type="hidden" name="page">
+
+                <!-- fields: 区域
+                    inline: 行的效果,避免占用宽度过于宽
+                -->
+                <div class="inline fields">
+                    <div class="field">
+                        <input type="text" name="title" placeholder="标题">
+                    </div>
+                    <div class="field">
+                        <div class="ui labeled action input">
+                            <!-- 可以选择的下拉框 -->
+                            <div class="ui type selection dropdown">
+                                <!-- 下拉列表的隐藏域 -->
+                                <input type="hidden" name="typeId">
+                                <i class="dropdown icon"></i>
+                                <!-- 下拉框默认显示的就是分类提示字符 -->
+                                <div class="default text">分类</div>
+                                <!-- 下拉框的可选项 -->
+                                <div class="menu">
+                                    <!--从后端获取下拉列表的值,在此处遍历-->
+                                    <div th:each="type:${types} " class="item" data-value="1" th:data-value="${type.id}" th:text="${type.name}">错误日志</div>
+
+                                    <!--下面的这种方法能保证在静态的时候能看见,但是在thymeleaf模板中不会显示,便于开发测试-->
+                                    <!--&lt;!&ndash;/*&ndash;&gt;-->
+                                    <!--<div class="item" data-value="2">开发者手册</div>-->
+                                    <!--&lt;!&ndash;/*&ndash;&gt;-->
+                                </div>
+                            </div>
+                        </div>
+                        <!--清除选项的按钮-->
+                        <button id="clear" class="ui compact button">清除</button>
+                    </div>
+                    <!-- checkbox可选项 -->
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="recommend" name="recommend">
+                            <!-- 点击文字不点击复选框,也会被选中 -->
+                            <label for="recommend">推荐</label>
+                        </div>
+                    </div>
+                    <!-- 按钮 -->
+                    <div class="field">
+                        <button type="button" id="search-btn" class="ui mini teal basic button">
+                            <i class="search icon"></i>
+                            搜索
+                        </button>
+                    </div>
+
+                </div>
+                
+            </div>
+
+            <!--局部刷新的方法,获取id-->
+            <div id="table-container">
+                <!-- 被查询的文章,表格显示
+                celled: 网格线
+                compact: 让表格紧缩
+                -->
+                <!--定义一个片段,局部刷新的数据就刷新在此-->
+                <table th:fragment="blogList" class="ui compact celled teal table">
+                    <!-- 表头 -->
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>标题</th>
+                            <th>分类</th>
+                            <th>推荐</th>
+                            <th>文章状态</th>
+                            <th>更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <!-- 表格的中间内容部分 -->
+                    <tbody>
+                    <!--获取到所有的blog列表,我们遍历列表-->
+                    <tr th:each="blog,iterStat: ${page.content}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td th:text="${blog.title}">翻墙</td>
+                        <td th:text="${blog.type.name}">小技巧</td>
+                        <!--博客文章是否被推荐-->
+                        <td th:text="${blog.recommend} ? '是' : '否' ">是</td>
+                        <!--博客是否发布-->
+                        <td th:text="${blog.published} ? '发布' : '草稿' ">草稿</td>
+                        <td th:text="${blog.updateTime}">2019-09-23</td>
+                        <td>
+                            <a href="#" th:href="@{/admin/blogs/{id}/input(id=${blog.id})}" class="ui mini teal basic button">编辑</a>
+                            <a href="#" th:href="@{/admin/blogs/{id}/delete(id=${blog.id})}" class="ui mini red basic button">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <!-- 表格的底部 -->
+                    <tfoot>
+                    <tr>
+                        <!-- 6列单元格都给合并 -->
+                        <th colspan="7">
+                            <!-- 分页的组件 -->
+                            <!-- 目前是显示在左边,如果要显示在右边的话,需要添加 right floated样式 -->
+                            <!--th:if="${page.totalPages}>1" : 如果总的页数大于1才会显示分页按钮-->
+                            <div class="ui mini pagination menu" th:if="${page.totalPages}>1">
+                                <!--h5中的 可以自定义数据类型: data-page-->
+                                <!--th:attr: 自定义的数据类型要被模板解析-->
+                                <a onclick="page(this)" th:attr="data-page=${page.number}-1" class="  item" th:unless="${page.first}">上一页</a>
+                                <a onclick="page(this)" th:attr="data-page=${page.number}+1" class=" item" th:unless="${page.last}">下一页</a>
+                            </div>
+                            <!-- 新增按钮 -->
+                            <a href="#" th:href="@{/admin/blogs/input}" class="ui mini right floated teal basic button">新增</a>
+                        </th>
+                    </tr>
+                    </tfoot>
+
+                </table>
+
+                <!--文章增加成功或者失败的提示-->
+                <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+                    <i class="close icon"></i>
+                    <div class="header">提示：</div>
+                    <p th:text="${message}">恭喜，操作成功！</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 底部内容 -->
+    <footer th:replace="admin/_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+        <!-- 整个容器
+             center aligned 容器内的字居中
+        -->
+        <div class="ui center aligned container">
+            <!-- 列布局分格 -->
+            <!-- grid 会将整个宽度分为16份
+                 divided 是用线来分割划分的区域
+                 inverted 为了让线能更加容易显示出来
+            -->
+            <div class="ui inverted divided stackable grid">
+                <!-- 分成三列,wide:填满 -->
+                <!-- 一共分成16份 -->
+                <div class="three wide column">
+                    <div class="ui inverted link list">
+                        <div class="item">
+                            <!-- 设置图片为圆角的方式 rounded image -->
+                            <img src="../../static/images/wechat.jpg" class="ui rounded image" alt="" style="width: 110px">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="three wide column">
+                    <!-- 标题 -->
+                    <h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+                    <!-- 添加竖着的列表 -->
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">用户故事1</a>
+                        <a href="#" class="item">用户故事2</a>
+                        <a href="#" class="item">用户故事3</a>
+                    </div>
+                </div>
+                <div class="three wide column">
+                     <!-- 标题 -->
+                     <h4 class="ui inverted header m-text-thin m-text-spaced">联系我</h4>
+                     <!-- 添加竖着的列表 -->
+                     <div class="ui inverted link list">
+                         <div class="item">1355930128@qq.com</div>
+                         <a href="#" class="item">QQ:1355930128</a>
+                         <a href="#" class="item">用户故事3</a>
+                     </div>
+                </div>
+                <div class="seven wide column">
+                    <h4 class="ui inverted header m-text-thin m-text-spaced">博客介绍</h4>
+                    <p class="m-text-thin m-text-spaced m-opacity-mini">这是一个练手的博客,菜鸟的我正在自己从0搭建一个网站,期间肯定会有很多困难,但我一定要克服</p>
+                </div>
+            </div>
+            <!-- 添加底部的分隔线 -->
+            <div class="ui inverted section divider"></div>
+            <!-- 分隔线下面的介绍 -->
+            <p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright@2019-9120 Designed by kameii</p>
+        </div>
+    </footer>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<script>
+    $('#btn').click(function(){
+        // 点击按钮,如果有这个样式就去除,没有这个样式就添加
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    // 初始化下拉框的组件
+    $('.ui.dropdown').dropdown({
+        // 鼠标移动过去,就会触发相应的事件
+        on: 'hover'
+    });
+    // 定义一个page方法,给表单中的隐含域page传值
+    function page(obj) {
+        $("[name='page']").val($(obj).data("page"));
+        // 点击分页的时候,调用局部刷新的方法
+        loadData();
+    }
+    // 局部刷新数据
+    function loadData() {
+        $("#table-container").load(/*[[@{/admin/blogs/search}]]*/"/admin/blogs/search",{
+            title : $("[name='title']").val(),
+            typeId : $("[name='typeId']").val(),
+            recommend : $("[name='recommend']").prop('checked'),
+            page : $("[name='page']").val()
+        });
+    }
+
+    // 点击搜索按钮触发点击事件
+    $('#search-btn').click(function () {
+        // 点击搜索的时候将数据清零
+        $("[name='page']").val(0);
+        // 点击搜索按钮的时候,发送请求,局部加载数据
+        loadData();
+    });
+
+    // 消息提示关闭初始化
+    $('.message .close').on('click', function () {
+        $(this).closest('.message').transition('fade');
+    });
+    
+    // 点击清除按钮的时候,清除选择项
+    $('#clear').on('click',function () {
+        $('.type.ui.dropdown').dropdown('clear')
+    })
+</script>
+</html>

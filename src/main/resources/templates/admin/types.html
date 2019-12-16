@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!-- 移动端的预览设置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <title>分类管理</title>
+</head>
+<body>
+
+    <nav th:replace="admin/_fragments :: menu(2)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+        <div class="ui container">
+             <!-- 导航组件 stackable: 为了响应手机的移动端,含义为可以堆叠 -->
+            <div class="ui inverted secondary stackable menu">
+                <!-- 放置网站的logo
+                    teal: 颜色
+                    item: 代表是 menu里面的每一个条目
+                -->
+                <h2 class="ui teal header item">后台管理</h2>
+                <!-- 给首页添加图标  结尾处要添加上icon才可以添加上样式-->
+                <a href="#" class="m-item item m-mobile-hide"><i class="home icon"></i>博客</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="idea icon"></i>分类</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="tags icon"></i>标签</a>
+                <!-- 管理员头像区域 -->
+                <div class="right m-item m-mobile-hide menu">
+                    <!-- 下拉菜单 -->
+                    <div class="ui dropdown item">
+                        <div class="text">
+                            <img class="ui avatar image" src="https://picsum.photos/100/100?image=1003">
+                            贾铭威
+                        </div>
+                        <!-- 下拉图标 -->
+                        <i class="dropdown icon"></i>
+                        <!-- 下拉菜单 -->
+                        <div class="menu">
+                            <a href="#" class="item">修改密码</a>
+                            <a href="#" class="item">注销</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 按钮的颜色是黑色
+             m-mobile-show: 在宽屏幕的时候,按钮隐藏
+        -->
+        <a href="#" id="btn" class="ui black icon button m-right-top m-mobile-show">
+            <!-- 添加手机端响应的图标 -->
+            <i class="sidebar icon"></i>
+        </a>
+    </nav>
+
+    <!-- 二级导航 -->
+    <div class="ui attached pointing menu">
+        <div class="ui container">
+            <div class="right menu">
+                <a href="#" th:href="@{/admin/types/input}" class="item">新增</a>
+                <a href="#" th:href="@{/admin/types}" class="ui active teal item">列表</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 中间内容 -->
+    <div class="m-container-small m-padded-tb-big">
+        <div class="ui container">
+
+            <!--message组件用来显示提示信息-->
+            <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+                <i class="close icon"></i>
+                <div class="header">提示:</div>
+                <p th:text="${message}">操作成功</p>
+            </div>
+
+            <!-- 被查询的文章,表格显示
+                celled: 网格线
+            -->
+            <table class="ui compact celled teal table">
+                <!-- 表头 -->
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>分类名称</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <!-- 表格的中间内容部分 -->
+                <tbody>
+                    <!--从后端获取分页对象的数据 page.content 能获取分页数据-->
+                    <tr th:each="type,iterStat : ${page.content}">
+                        <!--iterStat.count 获取当前的计数,例如被遍历的次数-->
+                        <td th:text="${iterStat.count}">1</td>
+                        <td th:text="${type.name}">翻墙</td>
+                        <td>
+                            <!--点击编辑,根据id来访问要编辑的响应页面-->
+                            <a href="#" th:href="@{/admin/types/{id}/input(id=${type.id})}" class="ui mini teal basic button">编辑</a>
+                            <a href="#" th:href="@{/admin/types/{id}/delete(id=${type.id})}" class="ui mini red basic button">删除</a>
+                        </td>
+                    </tr>
+                </tbody>
+                <!-- 表格的底部 -->
+                <tfoot>
+                    <tr>
+                        <!-- 6列单元格都给合并 -->
+                        <th colspan="6">
+                            <!-- 分页的组件 -->
+                            <!-- 目前是显示在左边,如果要显示在右边的 话,需要添加 right floated样式 -->
+                            <!--${page.totalPages}>1 当页数大于1的时候才会显示,当前只有一页数据(3条数据),所以不显示上一页下一页的块块区域-->
+                            <div class="ui mini pagination menu" th:if="${page.totalPages}>1">
+                                <!-- 获取到页数-1 = 上一页 -->
+                                <a th:href="@{/admin/types/(page=${page.number}-1)}" class="icon item" th:unless="${page.first}">
+                                    <!--th:unless="${page.first}" 只有存在上一页的时候,才会显示上一页-->
+                                    <i class="left chevron icon"></i>
+                                    上一页
+                                </a>
+                                <a th:href="@{/admin/types/(page=${page.number}+1)}" class="icon item" th:unless="${page.last}">
+                                    下一页
+                                    <i class="right chevron icon"></i>
+                                </a>
+                            </div>
+                            <!-- 新增按钮 -->
+                            <a th:href="@{/admin/types/input}" class="ui mini right floated teal basic button">新增</a>
+                        </th>
+                    </tr>
+                </tfoot>
+
+            </table>
+
+        </div>
+    </div>
+
+    <!-- 底部内容 -->
+    <footer th:replace="admin/_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+        <!-- 整个容器
+             center aligned 容器内的字居中
+        -->
+        <div class="ui center aligned container">
+            <!-- 列布局分格 -->
+            <!-- grid 会将整个宽度分为16份
+                 divided 是用线来分割划分的区域
+                 inverted 为了让线能更加容易显示出来
+            -->
+            <div class="ui inverted divided stackable grid">
+                <!-- 分成三列,wide:填满 -->
+                <!-- 一共分成16份 -->
+                <div class="three wide column">
+                    <div class="ui inverted link list">
+                        <div class="item">
+                            <!-- 设置图片为圆角的方式 rounded image -->
+                            <img src="../../static/images/wechat.jpg" class="ui rounded image" alt="" style="width: 110px">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="three wide column">
+                    <!-- 标题 -->
+                    <h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
+                    <!-- 添加竖着的列表 -->
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">用户故事1</a>
+                        <a href="#" class="item">用户故事2</a>
+                        <a href="#" class="item">用户故事3</a>
+                    </div>
+                </div>
+                <div class="three wide column">
+                     <!-- 标题 -->
+                     <h4 class="ui inverted header m-text-thin m-text-spaced">联系我</h4>
+                     <!-- 添加竖着的列表 -->
+                     <div class="ui inverted link list">
+                         <div class="item">1355930128@qq.com</div>
+                         <a href="#" class="item">QQ:1355930128</a>
+                         <a href="#" class="item">用户故事3</a>
+                     </div>
+                </div>
+                <div class="seven wide column">
+                    <h4 class="ui inverted header m-text-thin m-text-spaced">博客介绍</h4>
+                    <p class="m-text-thin m-text-spaced m-opacity-mini">这是一个练手的博客,菜鸟的我正在自己从0搭建一个网站,期间肯定会有很多困难,但我一定要克服</p>
+                </div>
+            </div>
+            <!-- 添加底部的分隔线 -->
+            <div class="ui inverted section divider"></div>
+            <!-- 分隔线下面的介绍 -->
+            <p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright@2019-9120 Designed by kameii</p>
+        </div>
+    </footer>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<script>
+    $('#btn').click(function(){
+        // 点击按钮,如果有这个样式就去除,没有这个样式就添加
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    // 初始化下拉框的组件
+    $('.ui.dropdown').dropdown({
+        // 鼠标移动过去,就会触发相应的事件
+        on: 'hover'
+    });
+
+    // 点击消息提示组件的 x 进行关闭
+    $('.message .close').on('click',function () {
+        $(this).closest('.message').transition('fade');
+    })
+</script>
+</html>
